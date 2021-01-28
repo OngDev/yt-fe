@@ -1,3 +1,5 @@
+let checkClickMostNew = 0
+let checkClickPlaylist = 0
 
 function generateSuccessHTMLOutput(response) {
   return '<h4>Result</h4>' +
@@ -87,19 +89,23 @@ document.getElementById("mostnew").onclick = async function () {
   // document.getElementById("iframeVideo").style.height = (withIFrame * 3 / 4) + "px";
   // table-mostnew
   try {
-    const videosNew = await getVideos();
-    if (videosNew && videosNew.status === 200) {
-      let dataTableString = ""
-      for (let index = 0; index < videosNew.data.data.length; index++) {
-        const video = videosNew.data.data[index];
-        const videoId = video.id
-        dataTableString += `<tr onclick="clickVideoDetail('${videoId}')">
+    if (checkClickMostNew === 0) {
+      console.log('=====>checkClickMostNew: ', checkClickMostNew);
+      const videosNew = await getVideos();
+      if (videosNew && videosNew.status === 200) {
+        let dataTableString = ""
+        for (let index = 0; index < videosNew.data.data.length; index++) {
+          const video = videosNew.data.data[index];
+          const videoId = video.id
+          dataTableString += `<tr onclick="clickVideoDetail('${videoId}')">
                               <td><img src="${video.thumbnails[0].url}"></td>
                               <td>${video.title}</td>
                               <td>${video.publishedAt}</td>
                             </tr>`
+        }
+        $('#table-mostnew tbody').append(dataTableString)
+        checkClickMostNew = 1
       }
-      $('#table-mostnew tbody').append(dataTableString)
     }
   } catch (error) {
     console.log(error);
@@ -170,16 +176,17 @@ function clickVideoDetail(id) {
 // menu3
 document.getElementById("playlist").onclick = async function () {
   try {
-    const playlists = await getPlaylist()
-    const playlistsData = playlists.data.data
-    if (playlists) {
-      const playlistFirst = playlistsData[0].id
-      const videosInPlaylist = await getVideos(playlistFirst)
-      let dataPlaylistString = ""
-      for (let index = 0; index < playlistsData.length; index++) {
-        const playlist = playlistsData[index];
-        dataPlaylistString +=
-          `<div class="panel panel-default">
+    if (checkClickPlaylist === 0) {
+      const playlists = await getPlaylist()
+      const playlistsData = playlists.data.data
+      if (playlists) {
+        const playlistFirst = playlistsData[0].id
+        const videosInPlaylist = await getVideos(playlistFirst)
+        let dataPlaylistString = ""
+        for (let index = 0; index < playlistsData.length; index++) {
+          const playlist = playlistsData[index];
+          dataPlaylistString +=
+            `<div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse${index}">${playlist.title}</a>
@@ -188,10 +195,10 @@ document.getElementById("playlist").onclick = async function () {
             <div id="collapse${index}" class="panel-collapse collapse">
             </div>
           </div>`
-      }
-      $('#data-collapse').append(dataPlaylistString)
-      $('#collapse0').attr('class', 'panel-collapse collapse in')
-      $('#collapse0').html(`
+        }
+        $('#data-collapse').append(dataPlaylistString)
+        $('#collapse0').attr('class', 'panel-collapse collapse in')
+        $('#collapse0').html(`
         <div class="tablescroll" id="id-tablescroll">
           <table class="table table-striped" id="table-playlist0">
             <tbody>
@@ -200,30 +207,30 @@ document.getElementById("playlist").onclick = async function () {
         </div>
           `)
 
-      if (videosInPlaylist.data.data.length < 4) {
-        document.getElementById("id-tablescroll").style.overflowY = "hidden";
-        document.getElementById("id-tablescroll").style.height = videosInPlaylist.data.data.length * 120 + "px";
-      }
-      let dataVideoString = ""
-      for (let videoIndex = 0; videoIndex < videosInPlaylist.data.data.length; videoIndex++) {
-        const video = videosInPlaylist.data.data[videoIndex];
-        const videoId = video.id
+        if (videosInPlaylist.data.data.length < 4) {
+          document.getElementById("id-tablescroll").style.overflowY = "hidden";
+          document.getElementById("id-tablescroll").style.height = videosInPlaylist.data.data.length * 120 + "px";
+        }
+        let dataVideoString = ""
+        for (let videoIndex = 0; videoIndex < videosInPlaylist.data.data.length; videoIndex++) {
+          const video = videosInPlaylist.data.data[videoIndex];
+          const videoId = video.id
 
-        dataVideoString += `<tr onclick="clickVideoDetail('${videoId}')">
+          dataVideoString += `<tr onclick="clickVideoDetail('${videoId}')">
                               <td><img src="${video.thumbnails[0].url}"></td>
                               <td>${video.title}</td>
                               <td>${video.publishedAt}</td>
                             </tr>`
-      }
-      $('#table-playlist0 tbody').append(dataVideoString)
+        }
+        $('#table-playlist0 tbody').append(dataVideoString)
 
-      for (let index = 1; index < playlistsData.length; index++) {
-        const playList = playlistsData[index];
-        const videosInPlaylist = await getVideos(playList.id)
-        const idCollapse = `#collapse${index}`
-        const idTable = `table-playlist${index}`
-        const idTableScroll = `id-tablescroll${index}`
-        $(idCollapse).html(`
+        for (let index = 1; index < playlistsData.length; index++) {
+          const playList = playlistsData[index];
+          const videosInPlaylist = await getVideos(playList.id)
+          const idCollapse = `#collapse${index}`
+          const idTable = `table-playlist${index}`
+          const idTableScroll = `id-tablescroll${index}`
+          $(idCollapse).html(`
         <div class="tablescroll" id=${idTableScroll}>
           <table class="table table-striped" id="${idTable}">
             <tbody>
@@ -232,25 +239,28 @@ document.getElementById("playlist").onclick = async function () {
         </div>
           `)
 
-        if (videosInPlaylist.data.data.length < 4) {
-          document.getElementById(idTableScroll).style.overflowY = "hidden";
-          document.getElementById(idTableScroll).style.height = videosInPlaylist.data.data.length * 120 + "px";
-        }
-        let dataVideoString = ""
-        for (let videoIndex = 0; videoIndex < videosInPlaylist.data.data.length; videoIndex++) {
-          const video = videosInPlaylist.data.data[videoIndex];
-          const videoId = video.id
+          if (videosInPlaylist.data.data.length < 4) {
+            document.getElementById(idTableScroll).style.overflowY = "hidden";
+            document.getElementById(idTableScroll).style.height = videosInPlaylist.data.data.length * 120 + "px";
+          }
+          let dataVideoString = ""
+          for (let videoIndex = 0; videoIndex < videosInPlaylist.data.data.length; videoIndex++) {
+            const video = videosInPlaylist.data.data[videoIndex];
+            const videoId = video.id
 
-          dataVideoString += `<tr onclick="clickVideoDetail('${videoId}')">
+            dataVideoString += `<tr onclick="clickVideoDetail('${videoId}')">
                                   <td><img src="${video.thumbnails[0].url}"></td>
                                   <td>${video.title}</td>
                                   <td>${video.publishedAt}</td>
                                 </tr>`
-        }
-        $(`#${idTable} tbody`).append(dataVideoString)
+          }
+          $(`#${idTable} tbody`).append(dataVideoString)
 
+        }
+        checkClickPlaylist = 1;
       }
     }
+
   } catch (error) {
     console.log(error);
   }
