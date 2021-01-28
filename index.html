@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>ÔngDev channel</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+</head>
+
+<body onload="firstLoad()">
+
+  <div class="jumbotron text-center">
+    <h1>Video in Ông Dev channel</h1>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <iframe width="100%" id="iframeVideo" height="320" src="https://www.youtube.com/embed/bxrc1otsKIM">
+        </iframe>
+      </div>
+
+      <div class="col-sm-6">
+        <ul class="nav nav-tabs">
+          <li id="top30views" class="active"><a data-toggle="tab" href="#home">Top views</a>
+          </li>
+          <li id="mostnew"><a data-toggle="tab" href="#menu1">Mới nhất</a></li>
+          <li id="playlist"><a data-toggle="tab" href="#menu2">Danh sách</a></li>
+        </ul>
+
+        <div class="tab-content">
+          <div id="home" class="tab-pane fade in active">
+            <h3>Video most views</h3>
+            <p>Những video được xem nhiều nhất</p>
+            <div class='tablescroll'>
+              <table class="table table-striped" id="table-mostviews">
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div id="menu1" class="tab-pane fade">
+            <h3>Videos new</h3>
+            <p>Những video mới nhất</p>
+            <div class='tablescroll'>
+              <table class="table table-striped" id="table-mostnew">
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div id="menu2" class="tab-pane fade">
+            <h3>Playlist</h3>
+            <div class="panel-group" id="accordion">
+              <div class="panel panel-default" id="data-collapse">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <script></script> -->
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script type="text/javascript" src="./assets/js/index.js"></script>
+</body>
+
+</html>
